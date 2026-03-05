@@ -31,9 +31,8 @@ function generateFallbackMeaning(word) {
 
   return {
     word,
-    meaning: `The term "${word}" appears to be a technical or descriptive word whose meaning depends on context.`,
-    example: `Example sentence using "${word}" may vary depending on context.`,
-    etymology: "Generated explanation (AI fallback)"
+    meaning: `The term "${word}" appears to be a descriptive or technical word whose meaning depends on context.`,
+    example: `Example usage of "${word}" may vary depending on the sentence.`
   };
 
 }
@@ -73,8 +72,7 @@ app.get("/api/word", (req, res) => {
   const response = {
     word,
     meaning: result.meaning,
-    example: result.example,
-    etymology: result.etymology
+    example: result.example
   };
 
   cache[word] = {
@@ -91,5 +89,7 @@ app.get("/api/word", (req, res) => {
 ================================ */
 
 app.listen(PORT, () => {
+
   console.log(`KAI backend running on http://localhost:${PORT}`);
+
 });

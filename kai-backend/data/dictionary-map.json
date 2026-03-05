@@ -1,22 +1,21 @@
 {
   "network": {
     "meaning": "A group of interconnected computers or systems that communicate with each other.",
-    "example": "The company built a secure network.",
-    "etymology": "From Old English 'net' + 'work'."
+    "example": "The company built a secure network for all employees."
   },
+
   "protocol": {
-    "meaning": "A set of rules governing data communication between devices.",
-    "example": "HTTP is a web protocol.",
-    "etymology": "From Greek 'protokollon'."
+    "meaning": "A set of rules that determine how data is transmitted between devices.",
+    "example": "HTTP is a protocol used for communication on the web."
   },
+
   "algorithm": {
-    "meaning": "A step-by-step procedure used for calculations or problem solving.",
-    "example": "Sorting algorithms organize data efficiently.",
-    "etymology": "Named after mathematician Al-Khwarizmi."
+    "meaning": "A step-by-step procedure used to solve a problem or perform a computation.",
+    "example": "Sorting algorithms organize data efficiently."
   },
+
   "encryption": {
-    "meaning": "The process of converting information into a secure code.",
-    "example": "Encryption protects sensitive data.",
-    "etymology": "From Greek 'kryptos' meaning hidden."
+    "meaning": "The process of converting information into a secure format to prevent unauthorized access.",
+    "example": "Encryption protects sensitive data transmitted over the internet."
   }
 }
