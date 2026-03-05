@@ -18,7 +18,10 @@ document.addEventListener("mouseup", async (event) => {
 
     currentWord = word;
 
-    createPopupContainer(event.pageX, event.pageY);
+    const rect = getSelectionPosition();
+
+    createPopupContainer(rect.left, rect.bottom);
+
     setLoadingState();
 
     try {
@@ -43,8 +46,6 @@ document.addEventListener("mouseup", async (event) => {
 
 /* ===============================
    CLICK OUTSIDE CLOSE
-   FIX: Changed "click" to "mousedown" so it doesn't
-   fire on the same event that opened the popup.
 ================================ */
 
 document.addEventListener("mousedown", (event) => {
@@ -89,20 +90,54 @@ function getSelectedWord() {
 
 
 /* ===============================
-   FETCH WORD DATA
+   GET SELECTION POSITION
+================================ */
+
+function getSelectionPosition() {
+
+    const selection = window.getSelection();
+
+    if (!selection.rangeCount) {
+        return { left: 0, bottom: 0 };
+    }
+
+    const range = selection.getRangeAt(0);
+
+    const rect = range.getBoundingClientRect();
+
+    return {
+        left: rect.left + window.scrollX,
+        bottom: rect.bottom + window.scrollY
+    };
+
+}
+
+
+/* ===============================
+   FETCH WORD DATA (via background)
 ================================ */
 
 async function fetchWordData(word) {
 
-    const response = await fetch(
-        `http://localhost:3001/api/word?text=${word}`
-    );
+    return new Promise((resolve, reject) => {
 
-    if (!response.ok) {
-        throw new Error("Word not found");
-    }
+        chrome.runtime.sendMessage(
+            {
+                type: "FETCH_WORD",
+                word: word
+            },
+            (response) => {
 
-    return response.json();
+                if (!response || !response.success) {
+                    reject("Word not found");
+                } else {
+                    resolve(response.data);
+                }
+
+            }
+        );
+
+    });
 
 }
 
@@ -120,8 +155,6 @@ function createPopupContainer(x, y) {
     popup.className = "kai-popup";
 
     popup.style.position = "absolute";
-    popup.style.top = `${y + 10}px`;
-    popup.style.left = `${x + 10}px`;
     popup.style.background = "#ffffff";
     popup.style.border = "1px solid #e5e5e5";
     popup.style.padding = "14px";
@@ -139,12 +172,20 @@ function createPopupContainer(x, y) {
 
     document.body.appendChild(popup);
 
-    // FIX: capture popupRef before async gap so null check works correctly
+    const popupWidth = popup.offsetWidth;
+    const screenWidth = window.innerWidth;
+
+    if (x + popupWidth > screenWidth) {
+        x = screenWidth - popupWidth - 20;
+    }
+
+    popup.style.left = `${x}px`;
+    popup.style.top = `${y + 10}px`;
+
     const popupRef = popup;
 
     requestAnimationFrame(() => {
 
-        // FIX: check popupRef (local) not popup (global) to avoid null dereference
         if (!popupRef || !popupRef.isConnected) return;
 
         popupRef.style.opacity = "1";

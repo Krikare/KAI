@@ -2,8 +2,17 @@
   "manifest_version": 3,
   "name": "KAI Selection Test",
   "version": "1.0",
-  "description": "Basic word selection test",
-  "host_permissions": ["http://localhost:3001/*"],
+  "description": "Word selection popup dictionary",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://localhost:3001/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
