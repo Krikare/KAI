@@ -1,36 +1,26 @@
 import fs from "fs";
 
-/* =================================
-   LOAD WORD LIST
-================================= */
-
-const words = fs.readFileSync("./data/word-list.txt", "utf-8")
-  .split("\n")
-  .map(w => w.trim())
-  .filter(Boolean);
-
-/* =================================
-   BUILD DICTIONARY MAP
-================================= */
+const source = JSON.parse(
+  fs.readFileSync("./data/dictionary-source.json", "utf8")
+);
 
 const dictionary = {};
 
-for (const word of words) {
+for (const word in source) {
 
-  dictionary[word] = {
-    meaning: `The word "${word}" is an English term whose meaning depends on context.`,
-    example: `Example sentence using "${word}".`
+  const definition = source[word];
+
+  dictionary[word.toLowerCase()] = {
+    meaning: definition,
+    example: `Example usage of "${word.toLowerCase()}" in a sentence.`
   };
 
 }
 
-/* =================================
-   SAVE DICTIONARY FILE
-================================= */
-
 fs.writeFileSync(
   "./data/dictionary-map.json",
-  JSON.stringify(dictionary, null, 2)
+  JSON.stringify(dictionary)
 );
 
-console.log("Dictionary generated successfully.");
+console.log("Dictionary built");
+console.log("Words:", Object.keys(dictionary).length);
