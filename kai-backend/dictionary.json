@@ -1,0 +1,32 @@
+[
+  {
+    "word": "network",
+    "meaning": "A group of interconnected computers or systems that can communicate with each other.",
+    "example": "The company built a secure network for its employees.",
+    "etymology": "From Old English 'net' + 'work'."
+  },
+  {
+    "word": "encryption",
+    "meaning": "The process of converting information into a secure code to prevent unauthorized access.",
+    "example": "Encryption protects sensitive data on the internet.",
+    "etymology": "From Greek 'kryptos' meaning hidden."
+  },
+  {
+    "word": "security",
+    "meaning": "Protection of systems, data, and networks from digital attacks.",
+    "example": "Cybersecurity is important for protecting personal information.",
+    "etymology": "From Latin 'securus' meaning free from danger."
+  },
+  {
+    "word": "algorithm",
+    "meaning": "A step-by-step procedure used for calculations, data processing, or problem-solving.",
+    "example": "Sorting algorithms organize data efficiently.",
+    "etymology": "Named after Persian mathematician Al-Khwarizmi."
+  },
+  {
+    "word": "data",
+    "meaning": "Information processed or stored by a computer.",
+    "example": "The server stores large amounts of user data.",
+    "etymology": "From Latin 'datum' meaning something given."
+  }
+]
