@@ -13,7 +13,7 @@ app.use(cors());
 ================================ */
 
 const dictionaryData = JSON.parse(
-  fs.readFileSync("./dictionary.json", "utf-8")
+  fs.readFileSync("./data/dictionary.json", "utf-8")
 );
 
 /* ===============================
@@ -21,18 +21,16 @@ const dictionaryData = JSON.parse(
 ================================ */
 
 const cache = {};
-const CACHE_TTL = 30 * 1000;
+const CACHE_TTL = 30000;
 
 /* ===============================
    FIND WORD
 ================================ */
 
 function findWord(word) {
-
   return dictionaryData.find(
     entry => entry.word === word
   );
-
 }
 
 /* ===============================
@@ -51,7 +49,7 @@ function generateFallbackMeaning(word) {
 }
 
 /* ===============================
-   API ENDPOINT
+   API
 ================================ */
 
 app.get("/api/word", (req, res) => {
@@ -62,29 +60,19 @@ app.get("/api/word", (req, res) => {
     return res.status(400).json({ error: "No word provided" });
   }
 
-  /* LEMMATIZE */
-
   word = normalizeWord(word);
 
   /* CACHE CHECK */
 
   if (cache[word] && Date.now() - cache[word].time < CACHE_TTL) {
 
-    console.log("Cache hit:", word);
-
     return res.json(cache[word].data);
 
   }
 
-  console.log("Cache miss:", word);
-
   let result = findWord(word);
 
-  /* IF DICTIONARY FAILS */
-
   if (!result) {
-
-    console.log("Dictionary miss → AI fallback");
 
     result = generateFallbackMeaning(word);
 
@@ -111,5 +99,7 @@ app.get("/api/word", (req, res) => {
 ================================ */
 
 app.listen(PORT, () => {
+
   console.log(`KAI backend running on http://localhost:${PORT}`);
+
 });

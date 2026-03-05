@@ -1,0 +1,20 @@
+[
+  {
+    "word": "network",
+    "meaning": "A group of interconnected computers or systems that communicate with each other.",
+    "example": "The company built a secure network.",
+    "etymology": "From Old English 'net' + 'work'."
+  },
+  {
+    "word": "protocol",
+    "meaning": "A set of rules governing data communication between devices.",
+    "example": "HTTP is a web protocol.",
+    "etymology": "From Greek 'protokollon'."
+  },
+  {
+    "word": "encryption",
+    "meaning": "The process of encoding data to prevent unauthorized access.",
+    "example": "Encryption protects sensitive information.",
+    "etymology": "From Greek 'kryptos' meaning hidden."
+  }
+]
