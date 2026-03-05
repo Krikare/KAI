@@ -19,6 +19,7 @@ document.addEventListener("mouseup", async () => {
     currentWord = word;
 
     const rect = getSelectionPosition();
+    const sentence = getContextSentence();
 
     createPopupContainer(rect.left, rect.bottom);
 
@@ -26,7 +27,7 @@ document.addEventListener("mouseup", async () => {
 
     try {
 
-        const data = await fetchWordData(word);
+        const data = await fetchWordData(word, sentence);
 
         if (!popup) return;
         if (word !== currentWord) return;
@@ -36,7 +37,6 @@ document.addEventListener("mouseup", async () => {
     } catch (err) {
 
         if (!popup) return;
-
         setErrorState("Word not found");
 
     }
@@ -82,7 +82,6 @@ function getSelectedWord() {
 
     if (!text) return null;
 
-    // Remove punctuation from beginning and end
     text = text.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g, "");
 
     if (!text) return null;
@@ -90,6 +89,39 @@ function getSelectedWord() {
     if (text.split(" ").length > 1) return null;
 
     return text.toLowerCase();
+
+}
+
+
+/* ===============================
+   GET CONTEXT SENTENCE
+================================ */
+
+function getContextSentence() {
+
+    const selection = window.getSelection();
+
+    if (!selection.rangeCount) return "";
+
+    const node = selection.anchorNode;
+
+    if (!node || !node.textContent) return "";
+
+    const text = node.textContent;
+
+    const sentences = text.split(/[.!?]/);
+
+    const selected = selection.toString().trim();
+
+    for (const s of sentences) {
+
+        if (s.toLowerCase().includes(selected.toLowerCase())) {
+            return s.trim();
+        }
+
+    }
+
+    return "";
 
 }
 
@@ -107,7 +139,6 @@ function getSelectionPosition() {
     }
 
     const range = selection.getRangeAt(0);
-
     const rect = range.getBoundingClientRect();
 
     return {
@@ -122,14 +153,15 @@ function getSelectionPosition() {
    FETCH WORD DATA
 ================================ */
 
-async function fetchWordData(word) {
+async function fetchWordData(word, sentence) {
 
     return new Promise((resolve, reject) => {
 
         chrome.runtime.sendMessage(
             {
                 type: "FETCH_WORD",
-                word: word
+                word: word,
+                sentence: sentence
             },
             (response) => {
 
@@ -161,19 +193,21 @@ function createPopupContainer(x, y) {
 
     popup.style.position = "absolute";
     popup.style.zIndex = "9999";
+    popup.style.background = "#F5F0DC";
+    popup.style.border = "1px solid #7BAF8F";
+    popup.style.padding = "14px";
+    popup.style.borderRadius = "10px";
+    popup.style.boxShadow = "0 10px 25px rgba(0,0,0,0.15)";
+    popup.style.color = "#1F4D3A";
+    popup.style.maxWidth = "320px";
+    popup.style.fontSize = "14px";
+    popup.style.lineHeight = "1.5";
 
     popup.style.opacity = "0";
     popup.style.transform = "translateY(5px)";
     popup.style.transition = "opacity 0.2s ease, transform 0.2s ease";
 
     document.body.appendChild(popup);
-
-    const popupWidth = popup.offsetWidth;
-    const screenWidth = window.innerWidth;
-
-    if (x + popupWidth > screenWidth) {
-        x = screenWidth - popupWidth - 20;
-    }
 
     popup.style.left = `${x}px`;
     popup.style.top = `${y + 10}px`;
@@ -201,8 +235,8 @@ function setLoadingState() {
     if (!popup) return;
 
     popup.innerHTML = `
-        <div class="kai-title">KAI</div>
-        <div class="kai-loading">Loading meaning...</div>
+        <div style="font-weight:700;margin-bottom:6px;">KAI</div>
+        <div style="font-size:13px;">Loading meaning...</div>
     `;
 
 }
@@ -217,17 +251,21 @@ function setSuccessState(data) {
     if (!popup) return;
 
     popup.innerHTML = `
-        <div class="kai-word">${data.word}</div>
+        <div style="font-weight:700;font-size:16px;margin-bottom:8px;">
+            ${data.word}
+        </div>
 
-        <div class="kai-meaning">
+        <div style="margin-bottom:8px;">
             <strong>Meaning:</strong> ${data.meaning}
         </div>
 
-        <div class="kai-example">
+        <div style="margin-bottom:8px;">
             <strong>Example:</strong> ${data.example}
         </div>
 
-        
+        <div style="font-size:13px;color:#355E4A;">
+            <strong>AI Insight:</strong> ${data.insight}
+        </div>
     `;
 
 }
@@ -242,7 +280,9 @@ function setErrorState(message) {
     if (!popup) return;
 
     popup.innerHTML = `
-        <div class="kai-error">${message}</div>
+        <div style="color:#c0392b;font-weight:600;">
+            ${message}
+        </div>
     `;
 
 }

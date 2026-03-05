@@ -1,95 +1,51 @@
 import express from "express";
 import cors from "cors";
 import fs from "fs";
-import { normalizeWord } from "./lemmatizer.js";
 
 const app = express();
-const PORT = 3001;
 
 app.use(cors());
-
-/* ===============================
-   LOAD DICTIONARY MAP
-================================ */
+app.use(express.json());
 
 const dictionary = JSON.parse(
-  fs.readFileSync("./data/dictionary-map.json", "utf-8")
+    fs.readFileSync("./data/dictionary-map.json", "utf8")
 );
 
-/* ===============================
-   CACHE
-================================ */
+app.post("/api/word", (req, res) => {
 
-const cache = {};
-const CACHE_TTL = 30000;
+    const rawWord = req.body.word.toLowerCase();
+    const sentence = req.body.sentence || "";
 
-/* ===============================
-   AI FALLBACK
-================================ */
+    const entry = dictionary[rawWord];
 
-function generateFallbackMeaning(word) {
+    let meaning = "";
+    let example = "";
+    let insight = "";
 
-  return {
-    word,
-    meaning: `The term "${word}" appears to be a descriptive or technical word whose meaning depends on context.`,
-    example: `Example usage of "${word}" may vary depending on the sentence.`
-  };
+    if (entry) {
 
-}
+        meaning = entry.meaning;
+        example = sentence || `Example usage of "${rawWord}".`;
 
-/* ===============================
-   API
-================================ */
+        insight = `In this sentence "${rawWord}" refers to its contextual meaning within the text.`;
 
-app.get("/api/word", (req, res) => {
+    } else {
 
-  let word = req.query.text?.toLowerCase();
+        meaning = `The term "${rawWord}" appears to be a descriptive word whose meaning depends on context.`;
+        example = sentence || `Example usage of "${rawWord}".`;
+        insight = `This explanation was generated because the word was not found in the offline dictionary.`;
 
-  if (!word) {
-    return res.status(400).json({ error: "No word provided" });
-  }
+    }
 
-  word = normalizeWord(word);
-
-  /* CACHE CHECK */
-
-  if (cache[word] && Date.now() - cache[word].time < CACHE_TTL) {
-    return res.json(cache[word].data);
-  }
-
-  /* DICTIONARY LOOKUP */
-
-  let result = dictionary[word];
-
-  if (!result) {
-
-    console.log("Dictionary miss → AI fallback");
-
-    result = generateFallbackMeaning(word);
-
-  }
-
-  const response = {
-    word,
-    meaning: result.meaning,
-    example: result.example
-  };
-
-  cache[word] = {
-    data: response,
-    time: Date.now()
-  };
-
-  res.json(response);
+    res.json({
+        word: rawWord,
+        meaning,
+        example,
+        insight
+    });
 
 });
 
-/* ===============================
-   START SERVER
-================================ */
-
-app.listen(PORT, () => {
-
-  console.log(`KAI backend running on http://localhost:${PORT}`);
-
+app.listen(3001, () => {
+    console.log("KAI backend running on http://localhost:3001");
 });

@@ -2,25 +2,34 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     if (message.type === "FETCH_WORD") {
 
-        fetch(`http://localhost:3001/api/word?text=${message.word}`)
-            .then(res => res.json())
-            .then(data => {
-
-                sendResponse({
-                    success: true,
-                    data: data
-                });
-
+        fetch(`http://localhost:3001/api/word`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                word: message.word,
+                sentence: message.sentence
             })
-            .catch(() => {
+        })
+        .then(res => res.json())
+        .then(data => {
 
-                sendResponse({
-                    success: false
-                });
-
+            sendResponse({
+                success: true,
+                data: data
             });
 
-        return true; // important for async response
+        })
+        .catch(() => {
+
+            sendResponse({
+                success: false
+            });
+
+        });
+
+        return true;
     }
 
 });
