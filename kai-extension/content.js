@@ -3,7 +3,6 @@ console.log("KAI content script loaded");
 let popup = null;
 let currentWord = null;
 
-
 /* ===============================
    WORD SELECTION LISTENER
 ================================ */
@@ -79,13 +78,18 @@ document.addEventListener("keydown", (event) => {
 
 function getSelectedWord() {
 
-    const text = window.getSelection().toString().trim();
+    let text = window.getSelection().toString().trim();
+
+    if (!text) return null;
+
+    // Remove punctuation from beginning and end
+    text = text.replace(/^[^a-zA-Z]+|[^a-zA-Z]+$/g, "");
 
     if (!text) return null;
 
     if (text.split(" ").length > 1) return null;
 
-    return text;
+    return text.toLowerCase();
 
 }
 
@@ -197,13 +201,8 @@ function setLoadingState() {
     if (!popup) return;
 
     popup.innerHTML = `
-        <div class="kai-title">
-            KAI
-        </div>
-
-        <div class="kai-loading">
-            Loading meaning...
-        </div>
+        <div class="kai-title">KAI</div>
+        <div class="kai-loading">Loading meaning...</div>
     `;
 
 }
@@ -218,9 +217,7 @@ function setSuccessState(data) {
     if (!popup) return;
 
     popup.innerHTML = `
-        <div class="kai-word">
-            ${data.word}
-        </div>
+        <div class="kai-word">${data.word}</div>
 
         <div class="kai-meaning">
             <strong>Meaning:</strong> ${data.meaning}
@@ -247,9 +244,7 @@ function setErrorState(message) {
     if (!popup) return;
 
     popup.innerHTML = `
-        <div class="kai-error">
-            ${message}
-        </div>
+        <div class="kai-error">${message}</div>
     `;
 
 }
