@@ -1,21 +1,42 @@
 {
   "network": {
-    "meaning": "A group of interconnected computers or systems that communicate with each other.",
-    "example": "The company built a secure network for all employees."
+    "meaning": "The word \"network\" is an English term whose meaning depends on context.",
+    "example": "Example sentence using \"network\"."
   },
-
   "protocol": {
-    "meaning": "A set of rules that determine how data is transmitted between devices.",
-    "example": "HTTP is a protocol used for communication on the web."
+    "meaning": "The word \"protocol\" is an English term whose meaning depends on context.",
+    "example": "Example sentence using \"protocol\"."
   },
-
   "algorithm": {
-    "meaning": "A step-by-step procedure used to solve a problem or perform a computation.",
-    "example": "Sorting algorithms organize data efficiently."
+    "meaning": "The word \"algorithm\" is an English term whose meaning depends on context.",
+    "example": "Example sentence using \"algorithm\"."
   },
-
+  "system": {
+    "meaning": "The word \"system\" is an English term whose meaning depends on context.",
+    "example": "Example sentence using \"system\"."
+  },
+  "database": {
+    "meaning": "The word \"database\" is an English term whose meaning depends on context.",
+    "example": "Example sentence using \"database\"."
+  },
+  "compiler": {
+    "meaning": "The word \"compiler\" is an English term whose meaning depends on context.",
+    "example": "Example sentence using \"compiler\"."
+  },
+  "architecture": {
+    "meaning": "The word \"architecture\" is an English term whose meaning depends on context.",
+    "example": "Example sentence using \"architecture\"."
+  },
+  "security": {
+    "meaning": "The word \"security\" is an English term whose meaning depends on context.",
+    "example": "Example sentence using \"security\"."
+  },
+  "authentication": {
+    "meaning": "The word \"authentication\" is an English term whose meaning depends on context.",
+    "example": "Example sentence using \"authentication\"."
+  },
   "encryption": {
-    "meaning": "The process of converting information into a secure format to prevent unauthorized access.",
-    "example": "Encryption protects sensitive data transmitted over the internet."
+    "meaning": "The word \"encryption\" is an English term whose meaning depends on context.",
+    "example": "Example sentence using \"encryption\"."
   }
 }
