@@ -1,0 +1,53 @@
+.kai-popup {
+
+    background: #f5f5dc;
+    color: #1b4332;
+
+    border: 1px solid #95d5b2;
+
+    padding: 14px;
+    border-radius: 10px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+
+    font-size: 14px;
+    line-height: 1.5;
+
+    max-width: 280px;
+
+    font-family: system-ui, sans-serif;
+
+}
+
+.kai-word{
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:6px;
+}
+
+.kai-meaning{
+    margin-bottom:6px;
+}
+
+.kai-example{
+    margin-bottom:6px;
+}
+
+.kai-origin{
+    font-size:12px;
+    opacity:0.7;
+}
+
+.kai-title{
+    font-weight:700;
+    margin-bottom:4px;
+}
+
+.kai-loading{
+    font-size:12px;
+}
+
+.kai-error{
+    color:#b00020;
+    font-weight:600;
+}

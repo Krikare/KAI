@@ -3,11 +3,12 @@ console.log("KAI content script loaded");
 let popup = null;
 let currentWord = null;
 
+
 /* ===============================
    WORD SELECTION LISTENER
 ================================ */
 
-document.addEventListener("mouseup", async (event) => {
+document.addEventListener("mouseup", async () => {
 
     const word = getSelectedWord();
 
@@ -114,7 +115,7 @@ function getSelectionPosition() {
 
 
 /* ===============================
-   FETCH WORD DATA (via background)
+   FETCH WORD DATA
 ================================ */
 
 async function fetchWordData(word) {
@@ -155,20 +156,11 @@ function createPopupContainer(x, y) {
     popup.className = "kai-popup";
 
     popup.style.position = "absolute";
-    popup.style.background = "#ffffff";
-    popup.style.border = "1px solid #e5e5e5";
-    popup.style.padding = "14px";
-    popup.style.borderRadius = "10px";
-    popup.style.boxShadow = "0 10px 25px rgba(0,0,0,0.15)";
     popup.style.zIndex = "9999";
-    popup.style.color = "#111";
-    popup.style.maxWidth = "280px";
-    popup.style.fontSize = "14px";
-    popup.style.lineHeight = "1.5";
-    popup.style.transition = "opacity 0.2s ease, transform 0.2s ease";
 
     popup.style.opacity = "0";
     popup.style.transform = "translateY(5px)";
+    popup.style.transition = "opacity 0.2s ease, transform 0.2s ease";
 
     document.body.appendChild(popup);
 
@@ -205,11 +197,12 @@ function setLoadingState() {
     if (!popup) return;
 
     popup.innerHTML = `
-        <div style="font-weight:600;margin-bottom:6px;">
-            Loading...
+        <div class="kai-title">
+            KAI
         </div>
-        <div style="font-size:12px;color:#666;">
-            Fetching word details
+
+        <div class="kai-loading">
+            Loading meaning...
         </div>
     `;
 
@@ -225,19 +218,19 @@ function setSuccessState(data) {
     if (!popup) return;
 
     popup.innerHTML = `
-        <div style="font-weight:700;margin-bottom:6px;">
+        <div class="kai-word">
             ${data.word}
         </div>
 
-        <div style="margin-bottom:6px;">
+        <div class="kai-meaning">
             <strong>Meaning:</strong> ${data.meaning}
         </div>
 
-        <div style="margin-bottom:6px;">
+        <div class="kai-example">
             <strong>Example:</strong> ${data.example}
         </div>
 
-        <div style="font-size:12px;color:#666;">
+        <div class="kai-origin">
             ${data.etymology}
         </div>
     `;
@@ -254,7 +247,7 @@ function setErrorState(message) {
     if (!popup) return;
 
     popup.innerHTML = `
-        <div style="color:#d33;font-weight:600;">
+        <div class="kai-error">
             ${message}
         </div>
     `;
