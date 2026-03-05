@@ -9,11 +9,11 @@ const PORT = 3001;
 app.use(cors());
 
 /* ===============================
-   LOAD DICTIONARY
+   LOAD DICTIONARY MAP
 ================================ */
 
-const dictionaryData = JSON.parse(
-  fs.readFileSync("./data/dictionary.json", "utf-8")
+const dictionary = JSON.parse(
+  fs.readFileSync("./data/dictionary-map.json", "utf-8")
 );
 
 /* ===============================
@@ -24,16 +24,6 @@ const cache = {};
 const CACHE_TTL = 30000;
 
 /* ===============================
-   FIND WORD
-================================ */
-
-function findWord(word) {
-  return dictionaryData.find(
-    entry => entry.word === word
-  );
-}
-
-/* ===============================
    AI FALLBACK
 ================================ */
 
@@ -41,7 +31,7 @@ function generateFallbackMeaning(word) {
 
   return {
     word,
-    meaning: `The term "${word}" appears to be a technical or descriptive word. Its meaning depends on the context in which it is used.`,
+    meaning: `The term "${word}" appears to be a technical or descriptive word whose meaning depends on context.`,
     example: `Example sentence using "${word}" may vary depending on context.`,
     etymology: "Generated explanation (AI fallback)"
   };
@@ -65,21 +55,23 @@ app.get("/api/word", (req, res) => {
   /* CACHE CHECK */
 
   if (cache[word] && Date.now() - cache[word].time < CACHE_TTL) {
-
     return res.json(cache[word].data);
-
   }
 
-  let result = findWord(word);
+  /* DICTIONARY LOOKUP */
+
+  let result = dictionary[word];
 
   if (!result) {
+
+    console.log("Dictionary miss → AI fallback");
 
     result = generateFallbackMeaning(word);
 
   }
 
   const response = {
-    word: result.word,
+    word,
     meaning: result.meaning,
     example: result.example,
     etymology: result.etymology
@@ -99,7 +91,5 @@ app.get("/api/word", (req, res) => {
 ================================ */
 
 app.listen(PORT, () => {
-
   console.log(`KAI backend running on http://localhost:${PORT}`);
-
 });
