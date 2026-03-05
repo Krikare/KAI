@@ -227,9 +227,7 @@ function setSuccessState(data) {
             <strong>Example:</strong> ${data.example}
         </div>
 
-        <div class="kai-origin">
-            ${data.etymology}
-        </div>
+        
     `;
 
 }
