@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import fs from "fs";
+import axios from "axios";
 import { normalizeWord } from "./lemmatizer.js";
 
 const app = express();
@@ -8,17 +9,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-/* ===============================
-   LOAD DICTIONARY
-================================ */
+/* LOAD DICTIONARY */
 
 const dictionary = JSON.parse(
   fs.readFileSync("./data/dictionary-map.json", "utf8")
 );
 
-/* ===============================
-   STOP WORDS
-================================ */
+/* STOP WORDS */
 
 const stopWords = new Set([
   "the","a","an","is","are","was","were",
@@ -26,9 +23,7 @@ const stopWords = new Set([
   "this","that","your","their","its"
 ]);
 
-/* ===============================
-   FIND WORD IN DICTIONARY
-================================ */
+/* FIND WORD */
 
 function findWord(word) {
 
@@ -49,11 +44,33 @@ function findWord(word) {
   return null;
 }
 
-/* ===============================
-   WORD API
-================================ */
+/* AI EXPLANATION */
 
-app.post("/api/word", (req, res) => {
+async function generateAIInsight(word, sentence) {
+
+  try {
+
+    const prompt =
+      `Explain the meaning of the word "${word}" in this sentence:\n"${sentence}"`;
+
+    const response = await axios.post(
+      "https://api-inference.huggingface.co/models/google/flan-t5-small",
+      { inputs: prompt }
+    );
+
+    return response.data[0]?.generated_text || "";
+
+  } catch (err) {
+
+    return `In this sentence "${word}" refers to its contextual meaning.`;
+
+  }
+
+}
+
+/* WORD API */
+
+app.post("/api/word", async (req, res) => {
 
   let rawWord = req.body.word.toLowerCase();
   const sentence = req.body.sentence || "";
@@ -78,18 +95,16 @@ app.post("/api/word", (req, res) => {
   if (entry) {
 
     meaning = entry.meaning;
-    example = sentence || `Example usage of "${rawWord}".`;
-
-    insight = `In this sentence "${rawWord}" refers to its contextual meaning within the text.`;
+    example = sentence;
 
   } else {
 
     meaning = `${rawWord} refers to something whose meaning depends on context.`;
-    example = sentence || `Example usage of "${rawWord}".`;
-
-    insight = `This explanation was generated because the word was not found in the offline dictionary.`;
+    example = sentence;
 
   }
+
+  insight = await generateAIInsight(rawWord, sentence);
 
   res.json({
     word: rawWord,
@@ -100,9 +115,7 @@ app.post("/api/word", (req, res) => {
 
 });
 
-/* ===============================
-   START SERVER
-================================ */
+/* START SERVER */
 
 app.listen(3001, () => {
   console.log("KAI backend running on http://localhost:3001");
